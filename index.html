@@ -1,1 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Townley Packs</title>
+<style>
+  :root {
+    --bg: #0d0d14;
+    --bg2: #16161f;
+    --bg3: #1e1e2a;
+    --card-bg: #1a1a26;
+    --border: #2a2a3a;
+    --text: #f0f0f8;
+    --text2: #9090aa;
+    --accent: #7c6cfc;
+    --accent2: #5a4de0;
+    --pack-glow: rgba(124,108,252,0.4);
+  }
+  .light {
+    --bg: #f0f0f8;
+    --bg2: #e4e4f0;
+    --bg3: #d8d8ea;
+    --card-bg: #ffffff;
+    --border: #c8c8dc;
+    --text: #111120;
+    --text2: #55556a;
+    --accent: #5a4de0;
+    --accent2: #7c6cfc;
+    --pack-glow: rgba(90,77,224,0.3);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.3s, color 0.3s;
+    overflow-x: hidden;
+  }
 
+  /* HEADER */
+  header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 58px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+  .logo span { color: var(--accent); }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+
+  /* DARK MODE TOGGLE */
+  .mode-toggle {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 20px; padding: 4px 10px; cursor: pointer;
+    font-size: 13px; color: var(--text2); user-select: none;
+    transition: all 0.2s;
+  }
+  .mode-toggle:hover { border-color: var(--accent); color: var(--text); }
+  .toggle-knob {
+    width: 32px; height: 17px; background: var(--border);
+    border-radius: 10px; position: relative; transition: background 0.3s;
+  }
+  .toggle-knob::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 13px; height: 13px; border-radius: 50%;
+    background: var(--text); transition: transform 0.3s;
+  }
+  .light .toggle-knob { background: var(--accent); }
+  .light .toggle-knob::after { transform: translateX(15px); }
+
+  /* TABS */
+  nav {
+    background: var(--bg2);
+    display: flex;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    padding: 12px 28px; font-size: 14px; font-weight: 600;
+    cursor: pointer; color: var(--text2); border-bottom: 2px solid transparent;
+    transition: all 0.2s; user-select: none; position: relative;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .notif-dot {
+    position: absolute; top: 8px; right: 10px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #e05050; display: none;
+  }
+  .notif-dot.visible { display: block; }
+
+  /* PAGES */
+  .page { display: none; flex: 1; }
+  .page.active { display: flex; flex-direction: column; }
+
+  /* ===== PACK OPENING PAGE ===== */
+  #page-packs {
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    gap: 40px;
+    min-height: calc(100vh - 115px);
+  }
+  .pack-title {
+    text-align: center;
+    font-size: 32px; font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+  .pack-title small { font-size: 14px; color: var(--text2); font-weight: 400; display: block; margin-top: 4px; }
+  .pack-area {
+    display: flex; flex-direction: column; align-items: center; gap: 24px;
+  }
+  .pack-visual {
+    width: 160px; height: 220px;
+    background: linear-gradient(135deg, #5a4de0 0%, #7c6cfc 50%, #a88fff 100%);
+    border-radius: 16px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    cursor: pointer; user-select: none;
+    box-shadow: 0 0 40px var(--pack-glow);
+    transition: transform 0.15s, box-shadow 0.2s;
+    font-size: 48px;
+    position: relative; overflow: hidden;
+  }
+  .pack-visual::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+  }
+  .pack-visual:hover { transform: scale(1.04) translateY(-4px); box-shadow: 0 0 60px var(--pack-glow); }
+  .pack-visual:active { transform: scale(0.97); }
+  .pack-label { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); letter-spacing: 2px; text-transform: uppercase; margin-top: 8px; position: relative; }
+  .btn-open {
+    background: var(--accent); color: #fff; border: none;
+    padding: 14px 40px; border-radius: 30px; font-size: 16px; font-weight: 700;
+    cursor: pointer; transition: all 0.15s; letter-spacing: 0.3px;
+  }
+  .btn-open:hover { background: var(--accent2); transform: translateY(-1px); }
+  .btn-open:active { transform: scale(0.97); }
+  .btn-open:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* RESULT OVERLAY */
+  #result-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.85);
+    display: none; align-items: center; justify-content: center;
+    flex-direction: column; gap: 24px;
+  }
+  #result-overlay.show { display: flex; }
+  .result-card-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.5) rotate(-8deg); }
+    to { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+  .result-card {
+    width: 200px; height: 200px; border-radius: 16px;
+    overflow: hidden; position: relative;
+    border: 3px solid #fff;
+  }
+  .result-card img { width: 100%; height: 100%; object-fit: cover; }
+  .result-card .no-img {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 60px; background: var(--bg3);
+  }
+  .result-rarity-badge {
+    font-size: 13px; font-weight: 800; letter-spacing: 2px;
+    text-transform: uppercase; padding: 4px 14px; border-radius: 20px;
+  }
+  .result-name { font-size: 22px; font-weight: 700; color: #fff; text-align: center; }
+  .result-new { font-size: 13px; color: #6eff99; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .btn-continue {
+    background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+    padding: 12px 32px; border-radius: 30px; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-continue:hover { background: rgba(255,255,255,0.25); }
+
+  /* ===== INVENTORY PAGE ===== */
+  #page-inventory { padding: 24px 20px; gap: 20px; }
+  .inventory-header {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .inventory-header h2 { font-size: 20px; font-weight: 700; }
+  .inv-stats { font-size: 13px; color: var(--text2); }
+  .inv-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+  }
+  .inv-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; position: relative;
+    transition: transform 0.15s, border-color 0.2s;
+  }
+  .inv-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .inv-card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+  .inv-card-info { padding: 6px 8px; }
+  .inv-card-name { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .inv-card-count { font-size: 10px; color: var(--text2); }
+  .inv-count-badge {
+    position: absolute; top: 6px; right: 6px;
+    background: rgba(0,0,0,0.7); color: #fff;
+    font-size: 11px; font-weight: 700; border-radius: 10px; padding: 2px 6px;
+  }
+  .inv-new-badge {
+    position: absolute; top: 6px; left: 6px;
+    background: #4ade80; color: #052e16;
+    font-size: 9px; font-weight: 800; border-radius: 10px; padding: 2px 6px;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+
+  /* ===== INDEX PAGE ===== */
+  #page-index { padding: 24px 20px; gap: 24px; }
+  .index-section { display: flex; flex-direction: column; gap: 12px; }
+  .index-section-title {
+    font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    padding: 6px 12px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px;
+    width: fit-content;
+  }
+  .index-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+  .index-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    transition: transform 0.15s;
+  }
+  .index-card:hover { transform: translateY(-2px); }
+  .index-card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+  .index-card .locked-img {
+    width: 100%; aspect-ratio: 1;
+    background: var(--bg3); display: flex; align-items: center; justify-content: center;
+    font-size: 28px; filter: grayscale(1); opacity: 0.35;
+  }
+  .index-card-info { padding: 6px 8px; }
+  .index-card-name { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .index-card-rarity { font-size: 10px; color: var(--text2); }
+
+  /* RARITY BAR at bottom */
+  .rarity-bar {
+    background: var(--bg2); border-top: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex; flex-wrap: wrap; gap: 8px 16px;
+    justify-content: center;
+  }
+  .rarity-pill {
+    font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  /* RARITY COLORS */
+  .r-common    { color: #aaaaaa; }
+  .r-uncommon  { color: #4dde80; }
+  .r-rare      { color: #60a5fa; }
+  .r-epic      { color: #c084fc; }
+  .r-legendary { color: #fbbf24; }
+  .r-mythic    { color: #f472b6; }
+  .r-godly     { color: #f87171; }
+
+  .rp-common    { background: #3a3a3a; color: #cccccc; }
+  .rp-uncommon  { background: #1a3d2a; color: #4dde80; }
+  .rp-rare      { background: #1a2a4d; color: #60a5fa; }
+  .rp-epic      { background: #2e1a4d; color: #c084fc; }
+  .rp-legendary { background: #3d2e00; color: #fbbf24; }
+  .rp-mythic    { background: #3d1a2e; color: #f472b6; }
+  .rp-godly     { background: #3d1a1a; color: #f87171; }
+
+  .border-common    { border-color: #555 !important; }
+  .border-uncommon  { border-color: #4dde80 !important; }
+  .border-rare      { border-color: #60a5fa !important; }
+  .border-epic      { border-color: #c084fc !important; }
+  .border-legendary { border-color: #fbbf24 !important; box-shadow: 0 0 12px rgba(251,191,36,0.4); }
+  .border-mythic    { border-color: #f472b6 !important; box-shadow: 0 0 14px rgba(244,114,182,0.5); }
+  .border-godly     { border-color: #f87171 !important; box-shadow: 0 0 18px rgba(248,113,113,0.6); }
+
+  /* CONFETTI canvas */
+  #confetti-canvas {
+    position: fixed; inset: 0; pointer-events: none; z-index: 300;
+  }
+
+  /* RARITY ANIMATIONS */
+  @keyframes shimmer {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+  @keyframes mythicPulse {
+    0%,100% { box-shadow: 0 0 20px #f472b6, 0 0 60px #f472b6; }
+    50% { box-shadow: 0 0 40px #f472b6, 0 0 100px #a855f7; }
+  }
+  @keyframes godlyPulse {
+    0% { box-shadow: 0 0 20px #f87171, 0 0 60px #ef4444; }
+    33% { box-shadow: 0 0 40px #fbbf24, 0 0 80px #f59e0b; }
+    66% { box-shadow: 0 0 40px #60a5fa, 0 0 80px #3b82f6; }
+    100% { box-shadow: 0 0 20px #f87171, 0 0 60px #ef4444; }
+  }
+  .anim-legendary .result-card { animation: shimmer 1.5s ease-in-out infinite; }
+  .anim-mythic .result-card { animation: mythicPulse 1.5s ease-in-out infinite; }
+  .anim-godly .result-card { animation: godlyPulse 1s ease-in-out infinite; }
+
+  /* PACK SHAKE ANIMATION */
+  @keyframes packShake {
+    0%,100% { transform: rotate(0); }
+    20% { transform: rotate(-6deg) scale(1.05); }
+    40% { transform: rotate(6deg) scale(1.08); }
+    60% { transform: rotate(-4deg) scale(1.05); }
+    80% { transform: rotate(4deg); }
+  }
+  .pack-shake { animation: packShake 0.5s ease-in-out; }
+
+  /* OPENING FLASH */
+  @keyframes flashIn {
+    0% { opacity: 0; transform: scale(2); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  .flash-in { animation: flashIn 0.3s ease-out; }
+
+  /* Packs counter */
+  .packs-opened { font-size: 13px; color: var(--text2); text-align: center; }
+  .streak-msg { font-size: 13px; color: #fbbf24; text-align: center; min-height: 20px; }
+</style>
+</head>
+<body class="">
+
+<canvas id="confetti-canvas"></canvas>
+
+<div id="result-overlay">
+  <div id="result-content" class="result-card-wrap">
+    <div id="result-rarity-badge" class="result-rarity-badge"></div>
+    <div class="result-card" id="result-card-el">
+      <img id="result-img" src="" alt="" />
+    </div>
+    <div id="result-name" class="result-name"></div>
+    <div id="result-new" class="result-new" style="display:none">✦ NEW UNLOCK ✦</div>
+    <button class="btn-continue" onclick="closeResult()">Continue Opening</button>
+  </div>
+</div>
+
+<header>
+  <div class="logo">Townley<span>Packs</span></div>
+  <div class="header-right">
+    <div class="mode-toggle" onclick="toggleMode()">
+      <span id="mode-label">🌙 Dark</span>
+      <div class="toggle-knob"></div>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="tab active" data-page="packs" onclick="switchTab('packs')">🃏 Open Packs</div>
+  <div class="tab" data-page="inventory" onclick="switchTab('inventory')">
+    🗂 Inventory
+    <span class="notif-dot" id="inv-notif"></span>
+  </div>
+  <div class="tab" data-page="index" onclick="switchTab('index')">📖 Index</div>
+</nav>
+
+<!-- PACKS PAGE -->
+<div id="page-packs" class="page active">
+  <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:32px; padding: 40px 20px;">
+    <div style="text-align:center;">
+      <div class="pack-title">Open a Pack<small>Pull characters from every rarity</small></div>
+    </div>
+    <div class="pack-area">
+      <div class="pack-visual" id="pack-visual" onclick="openPack()">
+        🎁
+        <div class="pack-label">Townley Pack</div>
+      </div>
+      <button class="btn-open" onclick="openPack()">Open Pack</button>
+      <div class="packs-opened">Packs opened: <strong id="packs-count">0</strong></div>
+      <div class="streak-msg" id="streak-msg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- INVENTORY PAGE -->
+<div id="page-inventory" class="page">
+  <div style="flex:1; padding:24px 20px;">
+    <div class="inventory-header" style="margin-bottom:16px;">
+      <h2>My Collection</h2>
+      <div class="inv-stats" id="inv-stats">0 / 0 collected</div>
+    </div>
+    <div class="inv-grid" id="inv-grid"></div>
+  </div>
+  <div class="rarity-bar" id="inv-rarity-bar"></div>
+</div>
+
+<!-- INDEX PAGE -->
+<div id="page-index" class="page">
+  <div style="flex:1; padding:24px 20px; display:flex; flex-direction:column; gap:28px;" id="index-content"></div>
+  <div class="rarity-bar" id="index-rarity-bar"></div>
+</div>
+
+<script>
+// =================== DATA ===================
+const RARITIES = [
+  { id: 'common',    label: 'Common',    chance: 60,     color: '#aaa',    confetti: ['#888','#aaa','#ccc'] },
+  { id: 'uncommon',  label: 'Uncommon',  chance: 25,     color: '#4dde80', confetti: ['#4dde80','#22c55e','#86efac'] },
+  { id: 'rare',      label: 'Rare',      chance: 10,     color: '#60a5fa', confetti: ['#60a5fa','#3b82f6','#93c5fd'] },
+  { id: 'epic',      label: 'Epic',      chance: 4,      color: '#c084fc', confetti: ['#c084fc','#a855f7','#d8b4fe'] },
+  { id: 'legendary', label: 'Legendary', chance: 1,      color: '#fbbf24', confetti: ['#fbbf24','#f59e0b','#fde68a','#fff'] },
+  { id: 'mythic',    label: 'Mythic',    chance: 0.05,   color: '#f472b6', confetti: ['#f472b6','#ec4899','#fbcfe8','#fff','#c084fc'] },
+  { id: 'godly',     label: 'Godly',     chance: 0.0001, color: '#f87171', confetti: ['#f87171','#ef4444','#fbbf24','#60a5fa','#c084fc','#fff'] },
+];
+
+const CHARACTERS = [
+  // Common
+  { id:'basic_mr_townley', name:'Basic Mr. Townley', rarity:'common', img:'Townley.jpg', special:'1in4' },
+  { id:'farmer', name:'Farmer Townley', rarity:'common', img:'FarmerTownley.jpg' },
+  { id:'cool', name:'Cool Townley', rarity:'common', img:'CoolTownley.jpg' },
+  { id:'doctor', name:'Doctor Townley', rarity:'common', img:'DoctorTownley.jpg' },
+  { id:'happy', name:'Happy Townley', rarity:'common', img:'HappyTownley.jpg' },
+  { id:'sad', name:'Sad Townley', rarity:'common', img:'SadTownley.jpg' },
+  { id:'schoolboy', name:'School Boy Townley', rarity:'common', img:'SchoolBoyTownley.jpg' },
+  { id:'kitchen', name:'Kitchen Townley', rarity:'common', img:'KitchenTownley.jpg' },
+  { id:'yellowteeth', name:'Yellow Teeth Townley', rarity:'common', img:'YellowTeethTownley.jpg' },
+  // Uncommon
+  { id:'ballet', name:'Ballet Townley', rarity:'uncommon', img:'BalletTownley.jpg' },
+  { id:'cowboy', name:'Cowboy Townley', rarity:'uncommon', img:'CowboyTownley.jpg' },
+  { id:'police', name:'Police Townley', rarity:'uncommon', img:'PoliceTownley.jpg' },
+  { id:'vitiligo', name:'Vitiligo Townley', rarity:'uncommon', img:'VitiligoTownley.jpg' },
+  { id:'vet', name:'Vet Townley', rarity:'uncommon', img:'VetTownley.jpg' },
+  { id:'carrot', name:'Carrot Townley', rarity:'uncommon', img:'CarrotTownley.jpg' },
+  { id:'army', name:'Army Townley', rarity:'uncommon', img:'ArmyTownley.jpg' },
+  { id:'allergic', name:'Allergic Townley', rarity:'uncommon', img:'AllergicTownley.jpg' },
+  { id:'homeless', name:'Homeless Townley', rarity:'uncommon', img:'HomelessTownley.jpg' },
+  // Rare
+  { id:'illegal', name:'Illegal Immigrant Townley', rarity:'rare', img:'IllegalTownley.jpg' },
+  { id:'burger', name:'Burger Townley', rarity:'rare', img:'BugerTownley.jpg' },
+  { id:'mexican', name:'Mexican Townley', rarity:'rare', img:'MexicanTownley.jpg' },
+  { id:'michael', name:'Michael Townley', rarity:'rare', img:'MichaelTownley.jpg' },
+  { id:'gangster', name:'Gangster Townley', rarity:'rare', img:'GangsterTownley.jpg' },
+  { id:'tiktoker', name:'Tiktoker Townley', rarity:'rare', img:'TiktokerTownley.jpg' },
+  { id:'princesses', name:'Princesses Townley', rarity:'rare', img:'PrincessesTownley.jpg' },
+  // Epic
+  { id:'fat', name:'Fat Townley', rarity:'epic', img:'FatTownley.jpg' },
+  { id:'asian', name:'Asian Townley', rarity:'epic', img:'AsainTownley.jpg' },
+  { id:'president', name:'President Townley', rarity:'epic', img:'PresidentTownley.jpg' },
+  { id:'toe', name:'Toe Townley', rarity:'epic', img:'ToeTownley.jpg' },
+  { id:'ice', name:'ICE Townley', rarity:'epic', img:'ICETownley.jpg' },
+  { id:'superhero', name:'Superhero Townley', rarity:'epic', img:'SuperheroTownley.jpg' },
+  // Legendary
+  { id:'furry', name:'Furry Townley', rarity:'legendary', img:'FurryTownley.jpg' },
+  { id:'indian', name:'Indian Townley', rarity:'legendary', img:'IndianTownley.jpg' },
+  { id:'daddypig', name:'Daddy Pig Townley', rarity:'legendary', img:'DaddyPigTownley.jpg' },
+  { id:'wheelchair', name:'Wheel Chair Townley', rarity:'legendary', img:'WheelChairTownley.jpg' },
+  { id:'trump', name:'Trump Townley', rarity:'legendary', img:'TrumpTownley.jpg' },
+  // Mythic
+  { id:'bigben', name:'Big Ben Townley', rarity:'mythic', img:'BigBenTownley.jpg' },
+  { id:'planet', name:'Planet Townley', rarity:'mythic', img:'PlanetTownley.jpg' },
+  { id:'monk', name:'Monk Townley', rarity:'mythic', img:'MonkTownley.jpg' },
+  // Godly
+  { id:'god', name:'God Townley', rarity:'godly', img:'GodTownley.jpg' },
+  { id:'transgender', name:'Transgender Townley', rarity:'godly', img:'TransgenderTownley.jpg' },
+];
+
+// =================== STATE ===================
+let inventory = {};   // { charId: count }
+let packsOpened = 0;
+let newUnlocks = 0;
+let isAnimating = false;
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('townleyState');
+    if (s) { const d = JSON.parse(s); inventory = d.inventory||{}; packsOpened = d.packsOpened||0; newUnlocks = d.newUnlocks||0; }
+    const mode = localStorage.getItem('townleyMode');
+    if (mode === 'light') { document.body.classList.add('light'); document.getElementById('mode-label').textContent = '☀️ Light'; }
+  } catch(e) {}
+}
+function saveState() {
+  localStorage.setItem('townleyState', JSON.stringify({ inventory, packsOpened, newUnlocks }));
+}
+
+// =================== AUDIO ===================
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let ctx;
+function getCtx() { if (!ctx) ctx = new AudioCtx(); return ctx; }
+
+function beep(freq=440, dur=0.1, type='sine', vol=0.15) {
+  const c = getCtx();
+  const o = c.createOscillator(); const g = c.createGain();
+  o.connect(g); g.connect(c.destination);
+  o.type = type; o.frequency.setValueAtTime(freq, c.currentTime);
+  g.gain.setValueAtTime(vol, c.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + dur);
+  o.start(); o.stop(c.currentTime + dur);
+}
+
+function playRaritySound(rarity) {
+  const c = getCtx();
+  const sounds = {
+    common: () => { beep(300,0.08,'square',0.1); },
+    uncommon: () => { beep(440,0.1,'sine',0.12); setTimeout(()=>beep(550,0.1,'sine',0.12),100); },
+    rare: () => {
+      [440,550,660].forEach((f,i) => setTimeout(()=>beep(f,0.15,'sine',0.15),i*80));
+    },
+    epic: () => {
+      [300,400,500,700].forEach((f,i) => setTimeout(()=>beep(f,0.2,'sawtooth',0.1),i*70));
+      setTimeout(()=>beep(880,0.4,'sine',0.18),350);
+    },
+    legendary: () => {
+      const notes = [523,659,784,1047];
+      notes.forEach((f,i) => setTimeout(()=>{ beep(f,0.3,'sine',0.18); beep(f*2,0.3,'sine',0.06); },i*100));
+      setTimeout(()=>{ beep(1047,0.6,'sine',0.2); beep(2094,0.4,'sine',0.08); },500);
+    },
+    mythic: () => {
+      const c2 = getCtx();
+      for(let i=0;i<8;i++) {
+        setTimeout(()=>{
+          beep(200+Math.random()*600, 0.4, 'sine', 0.1);
+          beep(800+Math.random()*400, 0.3, 'sine', 0.06);
+        }, i*80);
+      }
+      setTimeout(()=>{ beep(1760,0.8,'sine',0.22); beep(880,0.8,'sine',0.1); }, 700);
+    },
+    godly: () => {
+      const freqs = [261,329,392,523,659,784,1047,1319,1568];
+      freqs.forEach((f,i) => {
+        setTimeout(()=>{ beep(f,0.5,'sine',0.15); beep(f*2,0.3,'sine',0.06); },i*80);
+      });
+      setTimeout(()=>{
+        beep(2093,1.2,'sine',0.25); beep(1047,1.2,'sine',0.12);
+      }, 800);
+    }
+  };
+  (sounds[rarity]||sounds.common)();
+}
+
+function playClickSound() { beep(600,0.06,'sine',0.08); }
+function playTabSound() { beep(500,0.05,'sine',0.07); }
+
+// =================== PACK LOGIC ===================
+function pickRarity() {
+  const roll = Math.random() * 100;
+  let cum = 0;
+  for (const r of RARITIES) {
+    cum += r.chance;
+    if (roll < cum) return r.id;
+  }
+  return 'common';
+}
+
+function pickCharacter(rarityId) {
+  let pool = CHARACTERS.filter(c => c.rarity === rarityId);
+  if (rarityId === 'common') {
+    // Basic Mr. Townley has 1/4 chance within commons
+    // Rebuild weighted pool
+    const basic = pool.find(c => c.special === '1in4');
+    const rest = pool.filter(c => c.special !== '1in4');
+    // Total weight: basic=1, each other= (pool.length-1) * (3/4) / (pool.length-1) = 3/4 each... 
+    // Simpler: roll again
+    // 1/4 chance for basic, 3/4 spread across rest
+    if (Math.random() < 0.25) return basic;
+    return rest[Math.floor(Math.random() * rest.length)];
+  }
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function openPack() {
+  if (isAnimating) return;
+  isAnimating = true;
+  playClickSound();
+
+  const packEl = document.getElementById('pack-visual');
+  packEl.classList.add('pack-shake');
+  setTimeout(() => packEl.classList.remove('pack-shake'), 500);
+
+  setTimeout(() => {
+    const rarity = pickRarity();
+    const char = pickCharacter(rarity);
+    const isNew = !inventory[char.id];
+
+    inventory[char.id] = (inventory[char.id] || 0) + 1;
+    packsOpened++;
+    if (isNew) { newUnlocks++; }
+
+    saveState();
+    updateInventoryNotif();
+    updatePacksCount();
+
+    playRaritySound(rarity);
+    spawnConfetti(rarity);
+    showResult(char, rarity, isNew);
+  }, 400);
+}
+
+function showResult(char, rarity, isNew) {
+  const overlay = document.getElementById('result-overlay');
+  const content = document.getElementById('result-content');
+  const badge = document.getElementById('result-rarity-badge');
+  const img = document.getElementById('result-img');
+  const nameEl = document.getElementById('result-name');
+  const newEl = document.getElementById('result-new');
+  const cardEl = document.getElementById('result-card-el');
+
+  const rarityData = RARITIES.find(r => r.id === rarity);
+
+  badge.textContent = rarityData.label.toUpperCase();
+  badge.className = 'result-rarity-badge rp-' + rarity;
+
+  img.src = char.img;
+  img.alt = char.name;
+  nameEl.textContent = char.name;
+  newEl.style.display = isNew ? 'block' : 'none';
+
+  cardEl.className = 'result-card border-' + rarity;
+  content.className = 'result-card-wrap anim-' + rarity;
+
+  overlay.classList.add('show');
+}
+
+function closeResult() {
+  playClickSound();
+  document.getElementById('result-overlay').classList.remove('show');
+  newUnlocks = 0;
+  document.getElementById('inv-notif').classList.remove('visible');
+  isAnimating = false;
+  renderInventory();
+  renderIndex();
+}
+
+function updatePacksCount() {
+  document.getElementById('packs-count').textContent = packsOpened;
+  const streaks = [10,50,100,500,1000];
+  const msgs = ['10 packs! You\'re getting into it 🔥','50 packs! Serious collector 💪','100 packs! Absolute legend 👑','500 packs! Are you okay? 😂','1000 packs! You need help lol 💀'];
+  const idx = streaks.indexOf(packsOpened);
+  const el = document.getElementById('streak-msg');
+  if (idx >= 0) el.textContent = msgs[idx];
+  else if (packsOpened > 0 && el.textContent) setTimeout(()=>{ el.textContent=''; }, 4000);
+}
+
+function updateInventoryNotif() {
+  const dot = document.getElementById('inv-notif');
+  if (newUnlocks > 0) dot.classList.add('visible');
+}
+
+// =================== CONFETTI ===================
+const canvas = document.getElementById('confetti-canvas');
+const confCtx = canvas.getContext('2d');
+let confettiPieces = [];
+let confettiAF;
+
+function spawnConfetti(rarity) {
+  const r = RARITIES.find(x => x.id === rarity);
+  const colors = r.confetti;
+  const count = { common:20, uncommon:40, rare:60, epic:80, legendary:120, mythic:160, godly:220 }[rarity] || 30;
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  for (let i = 0; i < count; i++) {
+    confettiPieces.push({
+      x: Math.random() * canvas.width,
+      y: -20,
+      size: 6 + Math.random() * 10,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 6,
+      vy: 2 + Math.random() * 5,
+      rot: Math.random() * 360,
+      rspeed: (Math.random() - 0.5) * 8,
+      shape: Math.random() < 0.5 ? 'rect' : 'circle',
+      life: 1,
+    });
+  }
+
+  if (confettiAF) cancelAnimationFrame(confettiAF);
+  animateConfetti();
+}
+
+function animateConfetti() {
+  confCtx.clearRect(0, 0, canvas.width, canvas.height);
+  confettiPieces = confettiPieces.filter(p => p.life > 0.01);
+  confettiPieces.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    p.rot += p.rspeed;
+    p.vy += 0.12;
+    if (p.y > canvas.height + 20) p.life = 0;
+    confCtx.save();
+    confCtx.globalAlpha = Math.min(1, p.life);
+    confCtx.translate(p.x, p.y);
+    confCtx.rotate(p.rot * Math.PI / 180);
+    confCtx.fillStyle = p.color;
+    if (p.shape === 'circle') {
+      confCtx.beginPath(); confCtx.arc(0,0,p.size/2,0,Math.PI*2); confCtx.fill();
+    } else {
+      confCtx.fillRect(-p.size/2, -p.size/4, p.size, p.size/2);
+    }
+    confCtx.restore();
+  });
+  if (confettiPieces.length > 0) confettiAF = requestAnimationFrame(animateConfetti);
+}
+
+// =================== RENDER INVENTORY ===================
+function renderInventory() {
+  const grid = document.getElementById('inv-grid');
+  const statsEl = document.getElementById('inv-stats');
+
+  const owned = CHARACTERS.filter(c => inventory[c.id]);
+  statsEl.textContent = `${owned.length} / ${CHARACTERS.length} collected`;
+
+  if (owned.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:var(--text2); padding:40px;">Open some packs to start your collection!</div>';
+    return;
+  }
+
+  // Sort: by rarity then count
+  const rarityOrder = ['common','uncommon','rare','epic','legendary','mythic','godly'];
+  const sorted = [...owned].sort((a,b) => {
+    const rd = rarityOrder.indexOf(b.rarity) - rarityOrder.indexOf(a.rarity);
+    if (rd !== 0) return rd;
+    return (inventory[b.id]||0) - (inventory[a.id]||0);
+  });
+
+  grid.innerHTML = sorted.map(c => {
+    const count = inventory[c.id] || 0;
+    const isNew = count === 1 && newUnlocks > 0;
+    return `<div class="inv-card border-${c.rarity}">
+      <img src="${c.img}" alt="${c.name}" loading="lazy" onerror="this.style.display='none'">
+      <div class="inv-count-badge">x${count}</div>
+      ${isNew ? '<div class="inv-new-badge">NEW!</div>' : ''}
+      <div class="inv-card-info">
+        <div class="inv-card-name r-${c.rarity}">${c.name}</div>
+        <div class="inv-card-count r-${c.rarity}">${RARITIES.find(r=>r.id===c.rarity).label}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// =================== RENDER INDEX ===================
+function renderIndex() {
+  const content = document.getElementById('index-content');
+  const rarityOrder = ['common','uncommon','rare','epic','legendary','mythic','godly'];
+
+  content.innerHTML = rarityOrder.map(rId => {
+    const rData = RARITIES.find(r => r.id === rId);
+    const chars = CHARACTERS.filter(c => c.rarity === rId);
+    const cards = chars.map(c => {
+      const owned = inventory[c.id] > 0;
+      const imgHtml = owned
+        ? `<img src="${c.img}" alt="${c.name}" loading="lazy" onerror="this.style.display='none'">`
+        : `<div class="locked-img">🔒</div>`;
+      return `<div class="index-card border-${rId}" style="opacity:${owned?1:0.6}">
+        ${imgHtml}
+        <div class="index-card-info">
+          <div class="index-card-name r-${rId}">${c.name}</div>
+          <div class="index-card-rarity">${owned ? '✓ Owned' : 'Locked'}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    const ownedCount = chars.filter(c => inventory[c.id]).length;
+    return `<div class="index-section">
+      <div class="index-section-title rp-${rId}">
+        ${rData.label} &nbsp;·&nbsp; ${ownedCount}/${chars.length}
+        <span style="font-size:11px; opacity:0.8">${rData.chance}%</span>
+      </div>
+      <div class="index-grid">${cards}</div>
+    </div>`;
+  }).join('');
+}
+
+// =================== RARITY BARS ===================
+function buildRarityBar(containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = RARITIES.map(r =>
+    `<span class="rarity-pill rp-${r.id}">${r.label}: ${r.chance}%</span>`
+  ).join('');
+}
+
+// =================== TAB SWITCH ===================
+function switchTab(page) {
+  playTabSound();
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelector(`[data-page="${page}"]`).classList.add('active');
+  document.getElementById('page-' + page).classList.add('active');
+
+  if (page === 'inventory') { renderInventory(); document.getElementById('inv-notif').classList.remove('visible'); newUnlocks = 0; saveState(); }
+  if (page === 'index') renderIndex();
+}
+
+// =================== MODE TOGGLE ===================
+function toggleMode() {
+  playClickSound();
+  const isLight = document.body.classList.toggle('light');
+  document.getElementById('mode-label').textContent = isLight ? '☀️ Light' : '🌙 Dark';
+  localStorage.setItem('townleyMode', isLight ? 'light' : 'dark');
+}
+
+// =================== INIT ===================
+loadState();
+buildRarityBar('inv-rarity-bar');
+buildRarityBar('index-rarity-bar');
+updatePacksCount();
+renderInventory();
+renderIndex();
+
+// Pre-warm audio on first interaction
+document.addEventListener('click', () => { try { getCtx().resume(); } catch(e){} }, { once: true });
+</script>
+</body>
+</html>
