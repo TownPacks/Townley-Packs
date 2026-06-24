@@ -199,8 +199,8 @@ nav{
   100%{transform:scale(1) rotate(0);opacity:1}
 }
 
-/* Uncommon: slide up */
-.anim-uncommon .reveal-card-wrap{animation:revealUncommon 2.75s ease forwards}
+/* Uncommon: slide up with a soft puff of light */
+.anim-uncommon .reveal-card-wrap{animation:revealUncommon 2.75s cubic-bezier(.22,1.1,.4,1) forwards}
 @keyframes revealUncommon{
   0%{opacity:0;transform:translateY(80px) scale(.5)}
   30%{opacity:1;transform:translateY(-16px) scale(1.08)}
@@ -208,89 +208,126 @@ nav{
   100%{transform:translateY(0) scale(1);opacity:1}
 }
 .anim-uncommon .reveal-rays{display:block;animation:raysIn .4s .4s ease forwards;opacity:0}
+.anim-uncommon .reveal-flash{animation:flashPulseSoft 2.75s ease forwards}
 
-/* Rare: spin slam */
-.anim-rare .reveal-card-wrap{animation:revealRare 2.75s cubic-bezier(.34,1.3,.64,1) forwards}
+/* Rare: spin slam + ring pulse + light shake */
+.anim-rare .reveal-card-wrap{animation:revealRare 2.75s cubic-bezier(.34,1.4,.5,1) forwards}
 @keyframes revealRare{
   0%{opacity:0;transform:scale(0) rotate(180deg)}
-  35%{opacity:1;transform:scale(1.12) rotate(-5deg)}
-  55%{transform:scale(.96) rotate(2deg)}
-  70%{transform:scale(1.02) rotate(0)}
+  35%{opacity:1;transform:scale(1.16) rotate(-6deg)}
+  50%{transform:scale(.94) rotate(3deg)}
+  65%{transform:scale(1.04) rotate(-1deg)}
+  80%{transform:scale(.99) rotate(0)}
   100%{transform:scale(1) rotate(0);opacity:1}
 }
 .anim-rare .reveal-rays{display:block;animation:raysIn .3s .5s ease forwards;opacity:0}
+.anim-rare .reveal-rays #ray-spin{animation:raySpin 11s linear infinite}
+.anim-rare .reveal-stage{animation:shakeSmall .4s ease .42s}
+.anim-rare .reveal-flash{animation:flashPulse1 2.75s ease forwards}
 
-/* Epic: crash down */
-.anim-epic .reveal-card-wrap{animation:revealEpic 2.75s cubic-bezier(.2,1.4,.4,1) forwards}
+/* Epic: crash down + impact shake + double ring */
+.anim-epic .reveal-card-wrap{animation:revealEpic 2.75s cubic-bezier(.2,1.5,.35,1) forwards}
 @keyframes revealEpic{
-  0%{opacity:0;transform:translateY(-200px) scale(.8)}
-  30%{opacity:1;transform:translateY(12px) scale(1.1)}
-  45%{transform:translateY(-6px) scale(.98)}
-  58%{transform:translateY(4px) scale(1.02)}
-  70%{transform:translateY(0) scale(1)}
+  0%{opacity:0;transform:translateY(-220px) scale(.8) rotate(-3deg)}
+  30%{opacity:1;transform:translateY(14px) scale(1.14) rotate(2deg)}
+  45%{transform:translateY(-8px) scale(.96) rotate(-1deg)}
+  58%{transform:translateY(5px) scale(1.03) rotate(0)}
+  72%{transform:translateY(-2px) scale(.99)}
   100%{transform:translateY(0) scale(1);opacity:1}
 }
 .anim-epic .reveal-rays{display:block;animation:raysIn .3s .35s ease forwards;opacity:0}
-.anim-epic .reveal-ring{display:block;animation:ringOut .6s .4s ease forwards;opacity:0}
+.anim-epic .reveal-rays #ray-spin{animation:raySpin 8s linear infinite}
+.anim-epic .reveal-ring{display:block;animation:ringOut .6s .32s ease forwards;opacity:0}
+.anim-epic .reveal-ring-2{display:block;animation:ringOut .7s .42s ease forwards;opacity:0}
+.anim-epic .reveal-stage{animation:shakeMedium .5s ease .3s}
+.anim-epic .reveal-flash{animation:flashPulse2 2.75s ease forwards}
 
-/* Legendary: earthquake slam + golden rays */
+/* Legendary: earthquake slam + golden rays + heavier shake */
 .anim-legendary .reveal-card-wrap{animation:revealLegendary 2.75s ease forwards}
 @keyframes revealLegendary{
   0%{opacity:0;transform:scale(0) rotate(-360deg)}
-  30%{opacity:1;transform:scale(1.25) rotate(10deg)}
-  45%{transform:scale(.9) rotate(-5deg)}
-  60%{transform:scale(1.08) rotate(2deg)}
-  75%{transform:scale(.97) rotate(0)}
-  88%{transform:scale(1.03)}
+  30%{opacity:1;transform:scale(1.3) rotate(12deg)}
+  45%{transform:scale(.88) rotate(-6deg)}
+  60%{transform:scale(1.1) rotate(3deg)}
+  75%{transform:scale(.96) rotate(0)}
+  88%{transform:scale(1.04)}
   100%{transform:scale(1);opacity:1}
 }
 .anim-legendary .reveal-rays{display:block;animation:raysIn .2s .25s ease forwards;opacity:0}
-.anim-legendary .reveal-ring{display:block;animation:ringOut .5s .3s ease forwards;opacity:0}
+.anim-legendary .reveal-rays #ray-spin{animation:raySpin 6s linear infinite}
+.anim-legendary .reveal-ring{display:block;animation:ringOut .5s .26s ease forwards;opacity:0}
+.anim-legendary .reveal-ring-2{display:block;animation:ringOut .6s .36s ease forwards;opacity:0}
 .anim-legendary .reveal-sparkles{display:block}
+.anim-legendary .reveal-stage{animation:shakeMedium .55s ease .26s}
+.anim-legendary .reveal-flash{background:radial-gradient(circle at 50% 45%,#fff6d8 0%,transparent 65%);animation:flashPulse3 2.75s ease forwards}
 
-/* Mythic: glitch shatter */
+/* Mythic: glitch shatter — chromatic split, double flash, shifting backdrop */
 .anim-mythic .reveal-card-wrap{animation:revealMythic 2.75s ease forwards}
 @keyframes revealMythic{
   0%{opacity:0;transform:scale(.1)}
-  15%{opacity:1;transform:scale(1.4) rotate(8deg)}
-  28%{transform:scale(.85) rotate(-6deg)}
-  40%{transform:scale(1.15) rotate(4deg)}
-  52%{transform:scale(.95) rotate(-2deg)}
-  64%{transform:scale(1.06)}
-  76%{transform:scale(.98)}
+  15%{opacity:1;transform:scale(1.45) rotate(9deg)}
+  28%{transform:scale(.82) rotate(-7deg)}
+  40%{transform:scale(1.18) rotate(5deg)}
+  52%{transform:scale(.93) rotate(-3deg)}
+  64%{transform:scale(1.07)}
+  76%{transform:scale(.97)}
   88%{transform:scale(1.02)}
   100%{transform:scale(1);opacity:1}
 }
 .anim-mythic .reveal-rays{display:block;animation:raysIn .15s .1s ease forwards;opacity:0}
-.anim-mythic .reveal-ring{display:block;animation:ringOut .4s .15s ease forwards;opacity:0}
+.anim-mythic .reveal-rays #ray-spin{animation:raySpin 4s linear infinite reverse}
+.anim-mythic .reveal-ring{display:block;animation:ringOut .4s .12s ease forwards;opacity:0}
+.anim-mythic .reveal-ring-2{display:block;animation:ringOut .45s .22s ease forwards;opacity:0}
 .anim-mythic .reveal-sparkles{display:block}
 .anim-mythic .reveal-bg{animation:mythicBg 2.75s ease}
+.anim-mythic .reveal-stage{animation:shakeMedium .5s ease .12s}
+.anim-mythic .reveal-char-name{animation:glitchText 2.75s steps(2) forwards}
+.anim-mythic .reveal-card{animation:chromaSplit 2.75s steps(2) forwards}
+.anim-mythic .reveal-flash{background:radial-gradient(circle at 50% 45%,#ffd6f0 0%,transparent 65%);animation:flashPulse4 2.75s ease forwards}
 @keyframes mythicBg{
   0%,100%{background:rgba(0,0,0,.92)}
   20%{background:rgba(20,0,40,.97)}
   40%{background:rgba(40,0,20,.95)}
   60%{background:rgba(0,20,40,.97)}
 }
+@keyframes glitchText{
+  0%,12%,100%{text-shadow:0 2px 12px rgba(0,0,0,.8)}
+  14%{text-shadow:-3px 0 #f472b6,3px 0 #60a5fa,0 2px 12px rgba(0,0,0,.8);transform:translateX(-2px)}
+  16%{text-shadow:3px 0 #f472b6,-3px 0 #60a5fa,0 2px 12px rgba(0,0,0,.8);transform:translateX(2px)}
+  18%,38%{text-shadow:0 2px 12px rgba(0,0,0,.8);transform:translateX(0)}
+  40%{text-shadow:-2px 0 #f472b6,2px 0 #60a5fa;transform:translateX(-1px)}
+  42%,100%{text-shadow:0 2px 12px rgba(0,0,0,.8);transform:translateX(0)}
+}
+@keyframes chromaSplit{
+  0%,12%,100%{box-shadow:0 24px 80px rgba(0,0,0,.8)}
+  14%{box-shadow:-4px 0 0 rgba(244,114,182,.6),4px 0 0 rgba(96,165,250,.6),0 24px 80px rgba(0,0,0,.8)}
+  17%{box-shadow:0 24px 80px rgba(0,0,0,.8)}
+}
 
-/* Godly: EVERYTHING */
+/* Godly: EVERYTHING — triple flash, fast spin, brightness storm, heaviest shake */
 .anim-godly .reveal-card-wrap{animation:revealGodly 2.75s ease forwards}
 @keyframes revealGodly{
   0%{opacity:0;transform:scale(0) rotate(-720deg)}
-  20%{opacity:1;transform:scale(1.5) rotate(20deg)}
-  32%{transform:scale(.75) rotate(-12deg)}
-  44%{transform:scale(1.3) rotate(8deg)}
-  54%{transform:scale(.88) rotate(-4deg)}
-  63%{transform:scale(1.15) rotate(2deg)}
-  72%{transform:scale(.95)}
-  80%{transform:scale(1.06)}
+  20%{opacity:1;transform:scale(1.55) rotate(22deg)}
+  32%{transform:scale(.72) rotate(-13deg)}
+  44%{transform:scale(1.32) rotate(9deg)}
+  54%{transform:scale(.86) rotate(-5deg)}
+  63%{transform:scale(1.17) rotate(2deg)}
+  72%{transform:scale(.94)}
+  80%{transform:scale(1.07)}
   88%{transform:scale(.99)}
   94%{transform:scale(1.03)}
   100%{transform:scale(1);opacity:1}
 }
 .anim-godly .reveal-rays{display:block;animation:raysIn .1s .05s ease forwards;opacity:0}
-.anim-godly .reveal-ring{display:block;animation:ringOut .3s .1s ease forwards;opacity:0}
+.anim-godly .reveal-rays #ray-spin{animation:raySpin 2.4s linear infinite}
+.anim-godly .reveal-ring{display:block;animation:ringOut .3s .08s ease forwards;opacity:0}
+.anim-godly .reveal-ring-2{display:block;animation:ringOut .35s .16s ease forwards;opacity:0}
 .anim-godly .reveal-sparkles{display:block}
 .anim-godly .reveal-bg{animation:godlyBg 2.75s ease}
+.anim-godly .reveal-stage{animation:shakeHuge .6s ease .05s}
+.anim-godly .reveal-card-wrap{animation:revealGodly 2.75s ease forwards,godlyBrightness 2.75s linear forwards}
+.anim-godly .reveal-flash{background:radial-gradient(circle at 50% 45%,#fff 0%,transparent 70%);animation:flashPulse5 2.75s ease forwards}
 @keyframes godlyBg{
   0%{background:rgba(0,0,0,.92)}
   15%{background:rgba(30,0,0,.97)}
@@ -300,6 +337,44 @@ nav{
   75%{background:rgba(0,30,20,.97)}
   100%{background:rgba(0,0,0,.92)}
 }
+@keyframes godlyBrightness{
+  0%,18%{filter:brightness(1)}
+  20%{filter:brightness(1.9)}
+  23%,42%{filter:brightness(1)}
+  44%{filter:brightness(2.1)}
+  47%,78%{filter:brightness(1)}
+  80%{filter:brightness(1.7)}
+  83%,100%{filter:brightness(1)}
+}
+
+/* ─── SCREEN SHAKE (applied to the whole reveal stage on impact) ─── */
+@keyframes shakeSmall{
+  0%,100%{transform:translate(0,0)}
+  20%{transform:translate(-3px,1px)}
+  40%{transform:translate(3px,-1px)}
+  60%{transform:translate(-2px,1px)}
+  80%{transform:translate(2px,0)}
+}
+@keyframes shakeMedium{
+  0%,100%{transform:translate(0,0)}
+  10%{transform:translate(-6px,3px) rotate(-.4deg)}
+  25%{transform:translate(6px,-3px) rotate(.4deg)}
+  40%{transform:translate(-5px,2px) rotate(-.3deg)}
+  55%{transform:translate(4px,-2px) rotate(.2deg)}
+  70%{transform:translate(-2px,1px)}
+  85%{transform:translate(2px,-1px)}
+}
+@keyframes shakeHuge{
+  0%,100%{transform:translate(0,0)}
+  8%{transform:translate(-10px,5px) rotate(-.7deg)}
+  18%{transform:translate(10px,-5px) rotate(.7deg)}
+  28%{transform:translate(-9px,4px) rotate(-.5deg)}
+  38%{transform:translate(8px,-4px) rotate(.5deg)}
+  50%{transform:translate(-6px,3px) rotate(-.3deg)}
+  62%{transform:translate(5px,-2px) rotate(.3deg)}
+  75%{transform:translate(-3px,1px)}
+  88%{transform:translate(3px,-1px)}
+}
 
 /* Shared effects */
 .reveal-rays{
@@ -308,15 +383,29 @@ nav{
   border-radius:50%;pointer-events:none;z-index:-1;
 }
 @keyframes raysIn{from{opacity:0;transform:translate(-50%,-50%) scale(0)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes raySpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 
-.reveal-ring{
+.reveal-ring,.reveal-ring-2{
   display:none;position:absolute;
   width:260px;height:260px;border-radius:50%;
   border:4px solid rgba(255,255,255,.8);
   top:50%;left:50%;transform:translate(-50%,-50%);
   pointer-events:none;
 }
+.reveal-ring-2{border-width:2px;border-color:rgba(255,255,255,.5)}
 @keyframes ringOut{from{opacity:.8;transform:translate(-50%,-50%) scale(.5)}to{opacity:0;transform:translate(-50%,-50%) scale(2)}}
+
+.reveal-flash{
+  position:absolute;inset:0;pointer-events:none;opacity:0;
+  mix-blend-mode:screen;z-index:0;
+  background:radial-gradient(circle at 50% 45%,#fff 0%,transparent 65%);
+}
+@keyframes flashPulseSoft{0%,0%{opacity:0}30%{opacity:.25}45%{opacity:0}100%{opacity:0}}
+@keyframes flashPulse1{0%,33%{opacity:0}35%{opacity:.4}50%{opacity:0}100%{opacity:0}}
+@keyframes flashPulse2{0%,28%{opacity:0}30%{opacity:.55}48%{opacity:0}100%{opacity:0}}
+@keyframes flashPulse3{0%,28%{opacity:0}30%{opacity:.7}50%{opacity:0}100%{opacity:0}}
+@keyframes flashPulse4{0%,13%{opacity:0}15%{opacity:.85}38%{opacity:0}40%{opacity:.4}55%{opacity:0}100%{opacity:0}}
+@keyframes flashPulse5{0%,18%{opacity:0}20%{opacity:1}30%{opacity:.15}33%{opacity:.9}44%{opacity:0}48%{opacity:.6}60%{opacity:0}100%{opacity:0}}
 
 .reveal-sparkles{
   display:none;position:absolute;inset:0;pointer-events:none;
@@ -324,6 +413,7 @@ nav{
 .sparkle{
   position:absolute;width:6px;height:6px;border-radius:50%;
   animation:sparkleFly 1.5s ease-out forwards;
+  box-shadow:0 0 8px 2px currentColor;
 }
 @keyframes sparkleFly{
   0%{opacity:1;transform:translate(0,0) scale(1)}
@@ -366,9 +456,11 @@ nav{
   background:rgba(255,255,255,.12);color:#fff;
   border:1px solid rgba(255,255,255,.25);
   padding:13px 36px;border-radius:30px;font-size:14px;font-weight:700;
-  cursor:pointer;transition:all .2s;letter-spacing:.3px;
+  cursor:pointer;transition:opacity .35s,transform .35s,background .2s,border-color .2s;letter-spacing:.3px;
   backdrop-filter:blur(4px);
+  opacity:0;transform:translateY(8px);pointer-events:none;
 }
+.btn-continue.show{opacity:1;transform:translateY(0);pointer-events:auto}
 .btn-continue:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.4)}
 
 /* Ongoing card glow animations */
@@ -523,6 +615,66 @@ nav{
 }
 .empty-state .empty-icon{font-size:48px;margin-bottom:12px}
 .empty-state p{font-size:14px;font-weight:500}
+
+/* ─── AMBIENT PARTICLES (packs page) ─── */
+.ambient-particles{position:absolute;inset:-60px;pointer-events:none;z-index:-1;overflow:visible}
+.ambient-particles span{
+  position:absolute;border-radius:50%;background:var(--accent);
+  opacity:.35;filter:blur(1px);
+  animation:ambientFloat linear infinite;
+}
+@keyframes ambientFloat{
+  0%{transform:translate(0,0) scale(1);opacity:0}
+  10%{opacity:.4}
+  50%{transform:translate(var(--dx),var(--dy)) scale(1.3)}
+  90%{opacity:.4}
+  100%{transform:translate(0,0) scale(1);opacity:0}
+}
+
+/* ─── HOVER SHINE on char/index cards ─── */
+.char-card,.index-card{position:relative}
+.char-card::after,.index-card::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.25) 50%,transparent 65%);
+  transform:translateX(-120%);transition:transform .55s ease;
+}
+.char-card:hover::after,.index-card:hover::after{transform:translateX(120%)}
+
+/* ─── CHARACTER PREVIEW MODAL ─── */
+#preview-overlay{
+  position:fixed;inset:0;z-index:700;display:none;
+  align-items:center;justify-content:center;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
+  animation:previewBgIn .2s ease;
+}
+#preview-overlay.show{display:flex}
+@keyframes previewBgIn{from{opacity:0}to{opacity:1}}
+.preview-card{
+  position:relative;background:var(--card);border:1px solid var(--border2);
+  border-radius:20px;padding:28px;width:min(300px,84vw);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);
+  animation:previewCardIn .25s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes previewCardIn{from{opacity:0;transform:scale(.85) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.preview-close{
+  position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;
+  border:none;background:var(--bg3);color:var(--text2);font-size:13px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:.15s;
+}
+.preview-close:hover{background:var(--bg4);color:var(--text)}
+.preview-img-wrap{
+  width:160px;height:160px;border-radius:18px;overflow:hidden;
+  background:var(--bg3);display:flex;align-items:center;justify-content:center;
+  font-size:54px;border:3px solid var(--border2);
+}
+.preview-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.preview-rarity-pill{
+  font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  padding:5px 14px;border-radius:20px;
+}
+.preview-name{font-size:18px;font-weight:900;text-align:center;letter-spacing:-.3px}
+.preview-meta{font-size:12px;color:var(--text2);font-weight:600;text-align:center}
 </style>
 </head>
 <body>
@@ -539,11 +691,16 @@ nav{
         <stop offset="100%" stop-color="white" stop-opacity="0"/>
       </radialGradient>
     </defs>
-    <g id="ray-lines" transform="translate(250,250)"></g>
+    <g id="ray-spin" transform="translate(250,250)">
+      <g id="ray-lines"></g>
+    </g>
     <circle cx="250" cy="250" r="250" fill="url(#rayGrad)"/>
   </svg>
 
+  <div class="reveal-flash" id="reveal-flash"></div>
+
   <div class="reveal-ring" id="reveal-ring"></div>
+  <div class="reveal-ring-2" id="reveal-ring-2"></div>
   <div class="reveal-sparkles" id="reveal-sparkles"></div>
 
   <div class="reveal-stage" id="reveal-stage">
@@ -555,16 +712,34 @@ nav{
     </div>
     <div class="reveal-char-name" id="reveal-char-name"></div>
     <div class="reveal-new-tag" id="reveal-new-tag" style="display:none">✦ NEW UNLOCK ✦</div>
-    <button class="btn-continue" onclick="closeReveal()">Continue →</button>
+    <button class="btn-continue" id="btn-continue" onclick="closeReveal()">Continue →</button>
+  </div>
+</div>
+
+<!-- CHARACTER PREVIEW MODAL -->
+<div id="preview-overlay" onclick="if(event.target===this)closePreview()">
+  <div class="preview-card" id="preview-card">
+    <button class="preview-close" onclick="closePreview()">✕</button>
+    <div class="preview-img-wrap" id="preview-img-wrap">
+      <img id="preview-img" src="" alt="">
+    </div>
+    <div class="preview-rarity-pill" id="preview-rarity-pill"></div>
+    <div class="preview-name" id="preview-name"></div>
+    <div class="preview-meta" id="preview-meta"></div>
   </div>
 </div>
 
 <!-- HEADER -->
 <header>
   <div class="logo">TownleyPacks</div>
-  <div class="toggle-wrap" onclick="toggleMode()">
-    <span class="toggle-label" id="mode-label">🌙 Dark</span>
-    <div class="tog" id="tog"></div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="toggle-wrap" id="sound-toggle" onclick="toggleSound()" style="padding:6px 10px">
+      <span class="toggle-label" id="sound-label">🔊</span>
+    </div>
+    <div class="toggle-wrap" onclick="toggleMode()">
+      <span class="toggle-label" id="mode-label">🌙 Dark</span>
+      <div class="tog" id="tog"></div>
+    </div>
   </div>
 </header>
 
@@ -586,7 +761,8 @@ nav{
       <div class="pack-hero-sub">Pull characters ranging from Common to Godly</div>
     </div>
 
-    <div class="pack-3d-wrap" onclick="openPack()">
+    <div class="pack-3d-wrap" onclick="openPack()" style="position:relative">
+      <div class="ambient-particles" id="ambient-particles"></div>
       <div class="pack-3d" id="pack-el">
         <div class="pack-shine"></div>
         <div class="pack-3d-inner">
@@ -623,7 +799,7 @@ nav{
     <div class="page-topbar">
       <h2>My Collection</h2>
       <div class="topbar-right">
-        <div class="stat-chip" id="inv-stat-chip">0 / 44 cards</div>
+        <div class="stat-chip" id="inv-stat-chip">0 / 44 Townley's</div>
       </div>
     </div>
     <div class="char-grid" id="inv-grid"></div>
@@ -703,6 +879,8 @@ let newItems = {};   // items unlocked since last visiting inventory
 let packsOpened = 0;
 let bestRarity = null;
 let isAnimating = false;
+let soundMuted = false;
+let continueDelayTimer = null;
 
 const RARITY_ORDER = ['common','uncommon','rare','epic','legendary','mythic','godly'];
 
@@ -718,6 +896,7 @@ function loadState() {
     }
     const mode = localStorage.getItem('tp_mode');
     if (mode === 'light') applyLight(true);
+    soundMuted = localStorage.getItem('tp_muted') === '1';
   } catch(e){}
 }
 function saveState() {
@@ -735,6 +914,7 @@ function ac() {
 }
 
 function tone(freq, start, dur, type='sine', vol=0.15, ramp=true) {
+  if (soundMuted) return;
   const c = ac();
   const o = c.createOscillator();
   const g = c.createGain();
@@ -751,6 +931,7 @@ function playClick() { tone(700,.0,.08,'sine',.07); }
 function playTab()   { tone(600,.0,.06,'sine',.06); tone(800,.05,.06,'sine',.04); }
 
 function playRarityReveal(rarity) {
+  if (soundMuted) return;
   const c = ac();
   const t = c.currentTime;
 
@@ -934,6 +1115,8 @@ function showReveal(char, rarity, isNew) {
   // Build sparkles for higher rarities
   buildSparkles(rarity, rData.confetti);
 
+  overlay.className = '';
+  overlay.offsetHeight; // force reflow so repeated same-rarity pulls restart their animations
   overlay.className = 'anim-' + rarity;
   overlay.id = 'reveal-overlay';
   overlay.style.display = 'flex';
@@ -942,6 +1125,17 @@ function showReveal(char, rarity, isNew) {
   wrap.style.animation = 'none';
   wrap.offsetHeight;
   wrap.style.animation = '';
+
+  // Continue button: full animation (2.75s) for a brand new pull,
+  // 30% through (~0.8s) if it's a duplicate the player has already seen.
+  const continueBtn = document.getElementById('btn-continue');
+  continueBtn.classList.remove('show');
+  if (continueDelayTimer) clearTimeout(continueDelayTimer);
+  const REVEAL_DURATION = 2750;
+  const delay = isNew ? REVEAL_DURATION : REVEAL_DURATION * 0.3;
+  continueDelayTimer = setTimeout(() => {
+    continueBtn.classList.add('show');
+  }, delay);
 }
 
 function buildRays(rarity, color) {
@@ -979,7 +1173,9 @@ function buildSparkles(rarity, colors) {
     const cy = 40 + (Math.random()-0.5)*60;
     s.style.left = cx+'%';
     s.style.top = cy+'%';
-    s.style.background = colors[Math.floor(Math.random()*colors.length)];
+    const sparkColor = colors[Math.floor(Math.random()*colors.length)];
+    s.style.background = sparkColor;
+    s.style.boxShadow = `0 0 8px 2px ${sparkColor}`;
     s.style.width = s.style.height = (4+Math.random()*8)+'px';
     const tx = (Math.random()-0.5)*300;
     const ty = (Math.random()-0.5)*300;
@@ -993,6 +1189,8 @@ function buildSparkles(rarity, colors) {
 
 function closeReveal() {
   playClick();
+  if (continueDelayTimer) { clearTimeout(continueDelayTimer); continueDelayTimer = null; }
+  document.getElementById('btn-continue').classList.remove('show');
   document.getElementById('reveal-overlay').style.display = 'none';
   document.getElementById('btn-open').disabled = false;
   isAnimating = false;
@@ -1062,7 +1260,7 @@ function renderInventory() {
   const grid = document.getElementById('inv-grid');
   const chip = document.getElementById('inv-stat-chip');
   const owned = CHARACTERS.filter(c=>inventory[c.id]);
-  chip.textContent = `${owned.length} / ${CHARACTERS.length} cards`;
+  chip.textContent = `${owned.length} / ${CHARACTERS.length} Townley's`;
 
   if (!owned.length) {
     grid.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><p>Open some packs to build your collection!</p></div>`;
@@ -1078,7 +1276,7 @@ function renderInventory() {
     const count = inventory[c.id]||0;
     const isNew = !!newItems[c.id];
     const rLabel = RARITIES.find(r=>r.id===c.rarity).label;
-    return `<div class="char-card rb-${c.rarity}">
+    return `<div class="char-card rb-${c.rarity}" onclick="openPreview('${c.id}')">
       <img src="${c.img}" alt="${c.name}" loading="lazy" onerror="this.style.display='none'">
       <div class="badge-count">×${count}</div>
       ${isNew?'<div class="badge-new">NEW!</div>':''}
@@ -1103,7 +1301,7 @@ function renderIndex() {
 
     const cards = chars.map(c=>{
       const owned = inventory[c.id]>0;
-      return `<div class="index-card rb-${rId}" style="opacity:${owned?1:.55}">
+      return `<div class="index-card rb-${rId}" style="opacity:${owned?1:.55}" onclick="openPreview('${c.id}')">
         ${owned
           ?`<img src="${c.img}" alt="${c.name}" loading="lazy" onerror="this.style.display='none'">`
           :`<div class="index-card-locked">🔒</div>`}
@@ -1167,16 +1365,87 @@ function toggleMode() {
   localStorage.setItem('tp_mode', isLight ? 'light' : 'dark');
 }
 
+// ══════════════════════════════════════════════
+//  SOUND TOGGLE
+// ══════════════════════════════════════════════
+function applySoundLabel() {
+  document.getElementById('sound-label').textContent = soundMuted ? '🔇' : '🔊';
+}
+function toggleSound() {
+  soundMuted = !soundMuted;
+  localStorage.setItem('tp_muted', soundMuted ? '1' : '0');
+  applySoundLabel();
+  if (!soundMuted) playClick();
+}
+
 // pack bounce keyframe injection
 const ks = document.createElement('style');
 ks.textContent = `@keyframes packBounce{0%{transform:scale(1)}30%{transform:scale(.92) rotate(-3deg)}60%{transform:scale(1.05) rotate(2deg)}80%{transform:scale(.98)}100%{transform:scale(1)}}`;
 document.head.appendChild(ks);
 
 // ══════════════════════════════════════════════
+//  AMBIENT PARTICLES (decorative, behind pack)
+// ══════════════════════════════════════════════
+function buildAmbientParticles() {
+  const wrap = document.getElementById('ambient-particles');
+  if (!wrap) return;
+  let html = '';
+  for (let i=0;i<14;i++) {
+    const size = 3 + Math.random()*6;
+    const dx = (Math.random()-0.5)*240;
+    const dy = (Math.random()-0.5)*240;
+    const dur = 4 + Math.random()*5;
+    const delay = Math.random()*-8;
+    const left = Math.random()*100;
+    const top = Math.random()*100;
+    html += `<span style="left:${left}%;top:${top}%;width:${size}px;height:${size}px;--dx:${dx}px;--dy:${dy}px;animation-duration:${dur}s;animation-delay:${delay}s"></span>`;
+  }
+  wrap.innerHTML = html;
+}
+
+// ══════════════════════════════════════════════
+//  CHARACTER PREVIEW MODAL
+// ══════════════════════════════════════════════
+function openPreview(charId) {
+  const c = CHARACTERS.find(x=>x.id===charId);
+  if (!c) return;
+  playClick();
+  const owned = inventory[c.id] > 0;
+  const rData = RARITIES.find(r=>r.id===c.rarity);
+
+  const imgWrap = document.getElementById('preview-img-wrap');
+  if (owned) {
+    imgWrap.innerHTML = `<img id="preview-img" src="${c.img}" alt="${c.name}" onerror="this.parentElement.innerHTML='🎴'">`;
+  } else {
+    imgWrap.innerHTML = `<div style="font-size:54px;opacity:.4;filter:grayscale(1)">🔒</div>`;
+  }
+
+  const pill = document.getElementById('preview-rarity-pill');
+  pill.textContent = rData.label.toUpperCase();
+  pill.className = 'preview-rarity-pill rp-' + c.rarity;
+
+  document.getElementById('preview-name').textContent = owned ? c.name : '???';
+  document.getElementById('preview-name').className = 'preview-name ' + (owned ? 'rc-'+c.rarity : '');
+
+  const meta = document.getElementById('preview-meta');
+  meta.textContent = owned
+    ? `Owned ×${inventory[c.id]} · ${rData.chance}% pull chance`
+    : `Locked · ${rData.chance}% pull chance`;
+
+  document.getElementById('preview-overlay').classList.add('show');
+}
+function closePreview() {
+  playClick();
+  document.getElementById('preview-overlay').classList.remove('show');
+}
+
+// ══════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════
 loadState();
 buildRarityBars();
+buildAmbientParticles();
+applySoundLabel();
 updatePackStats();
 renderInventory();
 renderIndex();
