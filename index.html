@@ -425,14 +425,27 @@ nav{
 .reveal-card{
   width:220px;height:220px;border-radius:20px;
   overflow:hidden;border:3px solid rgba(255,255,255,.3);
-  position:relative;
+  position:relative;background:var(--bg3);
   box-shadow:0 24px 80px rgba(0,0,0,.8);
 }
-.reveal-card img{width:100%;height:100%;object-fit:cover;display:block}
+.reveal-card img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  opacity:0;transition:opacity .25s ease;position:relative;z-index:1;
+}
+.reveal-card img.loaded{opacity:1}
 .reveal-card-fallback{
   width:100%;height:100%;
   background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:60px;
 }
+.reveal-card-spinner{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:0;
+}
+.reveal-card-spinner::after{
+  content:'';width:30px;height:30px;border-radius:50%;
+  border:3px solid rgba(255,255,255,.2);border-top-color:rgba(255,255,255,.8);
+  animation:spinnerRotate .7s linear infinite;
+}
+@keyframes spinnerRotate{to{transform:rotate(360deg)}}
 
 .reveal-rarity-label{
   font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;
@@ -707,7 +720,9 @@ nav{
     <div class="reveal-rarity-label" id="reveal-rarity-label"></div>
     <div class="reveal-card-wrap" id="reveal-card-wrap">
       <div class="reveal-card" id="reveal-card">
-        <img id="reveal-img" src="" alt="">
+        <div class="reveal-card-spinner" id="reveal-spinner"></div>
+        <img id="reveal-img" src="" alt="" decoding="async">
+        <div class="reveal-card-fallback" id="reveal-fallback" style="display:none">🎴</div>
       </div>
     </div>
     <div class="reveal-char-name" id="reveal-char-name"></div>
@@ -881,6 +896,8 @@ let bestRarity = null;
 let isAnimating = false;
 let soundMuted = false;
 let continueDelayTimer = null;
+let revealLoadToken = 0;
+const preloadedImages = {};
 
 const RARITY_ORDER = ['common','uncommon','rare','epic','legendary','mythic','godly'];
 
@@ -1087,6 +1104,8 @@ function showReveal(char, rarity, isNew) {
   const wrap = document.getElementById('reveal-card-wrap');
   const card = document.getElementById('reveal-card');
   const img = document.getElementById('reveal-img');
+  const fallback = document.getElementById('reveal-fallback');
+  const spinner = document.getElementById('reveal-spinner');
   const nameEl = document.getElementById('reveal-char-name');
   const rarityLabel = document.getElementById('reveal-rarity-label');
   const newTag = document.getElementById('reveal-new-tag');
@@ -1095,9 +1114,31 @@ function showReveal(char, rarity, isNew) {
   rarityLabel.textContent = rData.label.toUpperCase();
   rarityLabel.className = 'reveal-rarity-label rp-' + rarity;
 
-  img.src = char.img;
+  // Reset image state immediately so a stale/previous character's image
+  // can never be shown while the new one loads, and guard against a
+  // late-arriving load/error event from a previous, since-replaced reveal.
+  revealLoadToken++;
+  const myToken = revealLoadToken;
+  img.classList.remove('loaded');
+  img.style.display = '';
+  fallback.style.display = 'none';
+  spinner.style.display = 'flex';
+  img.onload = () => {
+    if (myToken !== revealLoadToken) return;
+    spinner.style.display = 'none';
+    img.classList.add('loaded');
+  };
+  img.onerror = () => {
+    if (myToken !== revealLoadToken) return;
+    spinner.style.display = 'none';
+    img.style.display = 'none';
+    fallback.style.display = 'flex';
+  };
   img.alt = char.name;
-  img.onerror = () => { img.style.display='none'; };
+  img.src = char.img;
+  // If this image was already preloaded/cached, the browser may have it
+  // ready instantly — but onload still fires async, so the spinner never
+  // gets stuck either way.
 
   nameEl.textContent = char.name;
   nameEl.style.color = rData.color;
@@ -1277,7 +1318,7 @@ function renderInventory() {
     const isNew = !!newItems[c.id];
     const rLabel = RARITIES.find(r=>r.id===c.rarity).label;
     return `<div class="char-card rb-${c.rarity}" onclick="openPreview('${c.id}')">
-      <img src="${c.img}" alt="${c.name}" loading="lazy" onerror="this.style.display='none'">
+      <img src="${c.img}" alt="${c.name}" loading="lazy" decoding="async" onerror="this.style.display='none'">
       <div class="badge-count">×${count}</div>
       ${isNew?'<div class="badge-new">NEW!</div>':''}
       <div class="char-card-info">
@@ -1303,7 +1344,7 @@ function renderIndex() {
       const owned = inventory[c.id]>0;
       return `<div class="index-card rb-${rId}" style="opacity:${owned?1:.55}" onclick="openPreview('${c.id}')">
         ${owned
-          ?`<img src="${c.img}" alt="${c.name}" loading="lazy" onerror="this.style.display='none'">`
+          ?`<img src="${c.img}" alt="${c.name}" loading="lazy" decoding="async" onerror="this.style.display='none'">`
           :`<div class="index-card-locked">🔒</div>`}
         <div class="index-card-info">
           <div class="index-card-name rc-${rId}">${c.name}</div>
@@ -1440,6 +1481,25 @@ function closePreview() {
 }
 
 // ══════════════════════════════════════════════
+//  IMAGE PRELOADING (fixes slow/late-loading reveal images)
+// ══════════════════════════════════════════════
+function preloadCharacterImages() {
+  // Warm the browser's cache for every character image in the background,
+  // common rarities first since they're pulled most often. By the time a
+  // pack is opened, the image is usually already downloaded and decoded,
+  // so it shows instantly instead of popping in (or briefly showing the
+  // previous reveal's art while the new one is still in flight).
+  const ordered = RARITY_ORDER.flatMap(r => CHARACTERS.filter(c => c.rarity === r));
+  ordered.forEach(c => {
+    if (preloadedImages[c.id]) return;
+    const im = new Image();
+    im.decoding = 'async';
+    im.src = c.img;
+    preloadedImages[c.id] = im;
+  });
+}
+
+// ══════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════
 loadState();
@@ -1449,6 +1509,10 @@ applySoundLabel();
 updatePackStats();
 renderInventory();
 renderIndex();
+
+// Preload all character art in the background without blocking first paint
+if ('requestIdleCallback' in window) requestIdleCallback(preloadCharacterImages);
+else setTimeout(preloadCharacterImages, 50);
 
 // Check if any new items are pending
 if (Object.keys(newItems).length > 0) {
