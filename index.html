@@ -48,27 +48,28 @@ body{
   display:flex;
   flex-direction:column;
   transition:background .3s,color .3s;
-  overflow-x:hidden;
 }
 
 /* ─── HEADER ─── */
 header{
-  background:var(--bg2);
+  background:rgba(8,8,16,0.85);
   border-bottom:1px solid var(--border);
   padding:0 24px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  height:60px;
+  height:64px;
   position:sticky;top:0;z-index:100;
-  backdrop-filter:blur(12px);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
 }
 .logo{
-  font-size:20px;font-weight:900;letter-spacing:-1px;
-  background:linear-gradient(135deg,#fff 0%,#8b6fff 100%);
+  font-size:22px;font-weight:900;letter-spacing:-1.5px;
+  background:linear-gradient(135deg,#fff 0%,#b39dff 50%,#8b6fff 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
 }
-.light .logo{background:linear-gradient(135deg,#080820 0%,#6b4fdf 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.light .logo{background:linear-gradient(135deg,#080820 0%,#6b4fdf 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 
 /* Toggle */
 .toggle-wrap{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;padding:6px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);transition:all .2s}
@@ -84,14 +85,16 @@ nav{
   background:var(--bg2);
   border-bottom:1px solid var(--border);
   display:flex;gap:0;
+  padding:0 8px;
 }
 .tab{
-  padding:14px 28px;font-size:13px;font-weight:700;letter-spacing:.3px;
-  cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;
+  padding:16px 24px;font-size:13px;font-weight:700;letter-spacing:.3px;
+  cursor:pointer;color:var(--text3);border-bottom:3px solid transparent;
   transition:all .2s;user-select:none;position:relative;text-transform:uppercase;
+  border-radius:0;
 }
-.tab:hover{color:var(--text2)}
-.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab:hover{color:var(--text);background:rgba(255,255,255,.04)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(139,111,255,.05)}
 .notif-badge{
   position:absolute;top:10px;right:8px;
   min-width:16px;height:16px;border-radius:8px;
@@ -108,61 +111,57 @@ nav{
 /* ─── PACK PAGE ─── */
 #page-packs{
   align-items:center;justify-content:center;
-  min-height:calc(100vh - 120px);
-  padding:40px 20px;gap:0;
+  flex:1;
+  padding:32px 20px;gap:0;
   background:radial-gradient(ellipse at 50% 30%,rgba(139,111,255,.08) 0%,transparent 70%);
 }
 
-.pack-hero{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:40px}
+.pack-hero{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:28px}
 .pack-hero-title{font-size:38px;font-weight:900;letter-spacing:-1.5px;text-align:center}
 .pack-hero-sub{font-size:14px;color:var(--text2);font-weight:500}
 
 /* Pack card 3D */
-.pack-3d-wrap{perspective:800px;cursor:pointer;margin-bottom:32px}
+.pack-3d-wrap{perspective:800px;cursor:pointer;margin-bottom:36px}
 .pack-3d{
-  width:170px;height:240px;border-radius:20px;
+  width:180px;height:255px;border-radius:22px;
   position:relative;transform-style:preserve-3d;
   transition:transform .15s;
-  background:linear-gradient(145deg,#6b4fdf,#8b6fff,#b39dff);
-  box-shadow:0 20px 60px rgba(139,111,255,.5),0 0 0 1px rgba(255,255,255,.15);
+  background:linear-gradient(145deg,#5a3fc8,#8b6fff,#c4b0ff);
+  box-shadow:0 24px 64px rgba(139,111,255,.45),0 0 0 1px rgba(255,255,255,.12),inset 0 1px 0 rgba(255,255,255,.3);
 }
-.pack-3d-wrap:hover .pack-3d{transform:rotateY(-12deg) rotateX(6deg) scale(1.06);box-shadow:0 30px 80px rgba(139,111,255,.7),0 0 0 1px rgba(255,255,255,.2)}
+.pack-3d-wrap:hover .pack-3d{transform:rotateY(-14deg) rotateX(7deg) scale(1.07);box-shadow:0 36px 90px rgba(139,111,255,.65),0 0 0 1px rgba(255,255,255,.2),inset 0 1px 0 rgba(255,255,255,.3)}
 .pack-3d::before{
-  content:'';position:absolute;inset:0;border-radius:20px;
-  background:linear-gradient(180deg,rgba(255,255,255,.25) 0%,transparent 50%);
+  content:'';position:absolute;inset:0;border-radius:22px;
+  background:linear-gradient(160deg,rgba(255,255,255,.22) 0%,transparent 45%);
+  pointer-events:none;
 }
 .pack-3d-inner{
   position:absolute;inset:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:8px;
+  align-items:center;justify-content:center;gap:10px;
 }
-.pack-icon{font-size:52px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.4))}
+.pack-icon{font-size:58px;filter:drop-shadow(0 6px 16px rgba(0,0,0,.5))}
 .pack-name{
-  font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;
-  color:rgba(255,255,255,.9);text-shadow:0 1px 4px rgba(0,0,0,.4)
+  font-size:10px;font-weight:900;letter-spacing:4px;text-transform:uppercase;
+  color:rgba(255,255,255,.85);text-shadow:0 1px 6px rgba(0,0,0,.5)
 }
-.pack-shine{
-  position:absolute;inset:0;border-radius:20px;
-  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.15) 50%,transparent 60%);
-  animation:packShine 3s ease-in-out infinite;
-}
-@keyframes packShine{0%,100%{opacity:0;transform:translateX(-100%)}50%{opacity:1;transform:translateX(100%)}}
+/* pack-shine removed */
 
 .btn-open{
   background:linear-gradient(135deg,var(--accent2),var(--accent));
-  color:#fff;border:none;border-radius:40px;
-  padding:16px 52px;font-size:16px;font-weight:800;letter-spacing:.5px;
+  color:#fff;border:none;border-radius:50px;
+  padding:18px 60px;font-size:15px;font-weight:900;letter-spacing:1.5px;
   cursor:pointer;transition:all .15s;
-  box-shadow:0 8px 32px rgba(139,111,255,.5);
+  box-shadow:0 8px 32px rgba(139,111,255,.5),inset 0 1px 0 rgba(255,255,255,.2);
   text-transform:uppercase;
 }
-.btn-open:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(139,111,255,.7)}
+.btn-open:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(139,111,255,.7),inset 0 1px 0 rgba(255,255,255,.2)}
 .btn-open:active{transform:scale(.97)}
-.btn-open:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-open:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
 
-.pack-meta{display:flex;gap:24px;margin-top:24px}
+.pack-meta{display:flex;gap:32px;margin-top:28px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:18px 28px}
 .pack-meta-item{text-align:center}
-.pack-meta-num{font-size:22px;font-weight:900;color:var(--accent)}
-.pack-meta-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.pack-meta-num{font-size:26px;font-weight:900;color:var(--accent);line-height:1}
+.pack-meta-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-top:4px}
 
 .streak-toast{
   margin-top:16px;font-size:13px;font-weight:700;
@@ -496,31 +495,32 @@ nav{
 
 .page-topbar{
   display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:20px;
+  margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border);
 }
-.page-topbar h2{font-size:22px;font-weight:900;letter-spacing:-.5px}
+.page-topbar h2{font-size:24px;font-weight:900;letter-spacing:-.7px}
 .topbar-right{display:flex;align-items:center;gap:12px}
 .stat-chip{
   background:var(--bg3);border:1px solid var(--border2);
-  border-radius:20px;padding:5px 14px;
-  font-size:12px;font-weight:700;color:var(--text2);
+  border-radius:20px;padding:7px 16px;
+  font-size:12px;font-weight:800;color:var(--text2);letter-spacing:.3px;
 }
 
 .char-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-  gap:14px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));
+  gap:16px;
 }
 .char-card{
   background:var(--card);border:1px solid var(--border);
-  border-radius:16px;overflow:hidden;position:relative;
+  border-radius:18px;overflow:hidden;position:relative;
   transition:transform .15s,box-shadow .15s;cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,.2);
 }
-.char-card:hover{transform:translateY(-3px)}
+.char-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.3)}
 .char-card img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
 .char-card-fallback{width:100%;aspect-ratio:1;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:36px}
-.char-card-info{padding:8px 10px 10px}
-.char-card-name{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
-.char-card-rarity{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px}
+.char-card-info{padding:9px 10px 11px}
+.char-card-name{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.char-card-rarity{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
 
 /* Count badge */
 .badge-count{
@@ -770,7 +770,6 @@ nav{
 
 <!-- PACKS PAGE -->
 <div id="page-packs" class="page active">
-  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:40px 20px;background:radial-gradient(ellipse at 50% 20%,rgba(139,111,255,.1) 0%,transparent 65%)">
     <div class="pack-hero">
       <div class="pack-hero-title">Open a Pack</div>
       <div class="pack-hero-sub">Pull characters ranging from Common to Godly</div>
@@ -779,7 +778,6 @@ nav{
     <div class="pack-3d-wrap" onclick="openPack()" style="position:relative">
       <div class="ambient-particles" id="ambient-particles"></div>
       <div class="pack-3d" id="pack-el">
-        <div class="pack-shine"></div>
         <div class="pack-3d-inner">
           <div class="pack-icon">🎁</div>
           <div class="pack-name">Townley Pack</div>
@@ -805,7 +803,6 @@ nav{
     </div>
 
     <div class="streak-toast" id="streak-toast"></div>
-  </div>
 </div>
 
 <!-- INVENTORY PAGE -->
@@ -814,7 +811,7 @@ nav{
     <div class="page-topbar">
       <h2>My Collection</h2>
       <div class="topbar-right">
-        <div class="stat-chip" id="inv-stat-chip">0 / 44 Townley's</div>
+        <div class="stat-chip" id="inv-stat-chip">0 / 55 Townley's</div>
       </div>
     </div>
     <div class="char-grid" id="inv-grid"></div>
@@ -884,6 +881,18 @@ const CHARACTERS = [
   {id:'monk',       name:'Monk Townley',             rarity:'mythic',    img:'MonkTownley.jpg'},
   {id:'god',        name:'God Townley',              rarity:'godly',     img:'GodTownley.jpg'},
   {id:'transgender',name:'Transgender Townley',      rarity:'godly',     img:'TransgenderTownley.jpg'},
+  // New additions
+  {id:'plantlover', name:'Plant Lover Townley',      rarity:'common',    img:'PlantTownley.jpg'},
+  {id:'angry',      name:'Angry Townley',            rarity:'common',    img:'AngryTownley.jpg'},
+  {id:'wet',        name:'Wet Townley',              rarity:'common',    img:'WetTownley.jpg'},
+  {id:'plumber',    name:'Plumber Townley',          rarity:'common',    img:'PlumberTownley.jpg'},
+  {id:'gay',        name:'Gay Townley',              rarity:'uncommon',  img:'GayTownley.jpg'},
+  {id:'bald',       name:'Bald Townley',             rarity:'uncommon',  img:'BaldTownley.jpg'},
+  {id:'ginger',     name:'Ginger Townley',           rarity:'uncommon',  img:'GingerTownley.jpg'},
+  {id:'pregnant',   name:'Pregnant Townley',         rarity:'rare',      img:'PregnantTownley.jpg'},
+  {id:'elderly',    name:'Elderly Townley',          rarity:'rare',      img:'ElderlyTownley.jpg'},
+  {id:'hooters',    name:'Hooters Townley',          rarity:'epic',      img:'HootersTownley.jpg'},
+  {id:'cuboid',     name:'Cuboid Townley',           rarity:'epic',      img:'CuboidTownley.jpg'},
 ];
 
 // ══════════════════════════════════════════════
@@ -1135,10 +1144,15 @@ function showReveal(char, rarity, isNew) {
     fallback.style.display = 'flex';
   };
   img.alt = char.name;
-  img.src = char.img;
-  // If this image was already preloaded/cached, the browser may have it
-  // ready instantly — but onload still fires async, so the spinner never
-  // gets stuck either way.
+  // Use preloaded image if available and already complete — shows instantly
+  const cached = preloadedImages[char.id];
+  if (cached && cached.complete && cached.naturalWidth > 0) {
+    img.src = cached.src;
+    spinner.style.display = 'none';
+    img.classList.add('loaded');
+  } else {
+    img.src = char.img;
+  }
 
   nameEl.textContent = char.name;
   nameEl.style.color = rData.color;
@@ -1318,7 +1332,7 @@ function renderInventory() {
     const isNew = !!newItems[c.id];
     const rLabel = RARITIES.find(r=>r.id===c.rarity).label;
     return `<div class="char-card rb-${c.rarity}" onclick="openPreview('${c.id}')">
-      <img src="${c.img}" alt="${c.name}" loading="lazy" decoding="async" onerror="this.style.display='none'">
+      <img src="${c.img}" alt="${c.name}" loading="eager" decoding="async" onerror="this.style.display='none'">
       <div class="badge-count">×${count}</div>
       ${isNew?'<div class="badge-new">NEW!</div>':''}
       <div class="char-card-info">
@@ -1344,7 +1358,7 @@ function renderIndex() {
       const owned = inventory[c.id]>0;
       return `<div class="index-card rb-${rId}" style="opacity:${owned?1:.55}" onclick="openPreview('${c.id}')">
         ${owned
-          ?`<img src="${c.img}" alt="${c.name}" loading="lazy" decoding="async" onerror="this.style.display='none'">`
+          ?`<img src="${c.img}" alt="${c.name}" loading="eager" decoding="async" onerror="this.style.display='none'">`
           :`<div class="index-card-locked">🔒</div>`}
         <div class="index-card-info">
           <div class="index-card-name rc-${rId}">${c.name}</div>
@@ -1510,9 +1524,8 @@ updatePackStats();
 renderInventory();
 renderIndex();
 
-// Preload all character art in the background without blocking first paint
-if ('requestIdleCallback' in window) requestIdleCallback(preloadCharacterImages);
-else setTimeout(preloadCharacterImages, 50);
+// Preload all character art immediately in the background
+setTimeout(preloadCharacterImages, 0);
 
 // Check if any new items are pending
 if (Object.keys(newItems).length > 0) {
